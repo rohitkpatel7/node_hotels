@@ -1,23 +1,29 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+require("dotenv").config();
 
 // MongoDB connection URL
-const mongoURL = 'mongodb://127.0.0.1:27017/hotels';
 
-// Connect to MongoDB (NO deprecated options)
-mongoose.connect(mongoURL)
+//local mongodb compass database
+// const mongoURL = process.env.MONGODB_URL_LOCAL;
+
+//cloud mongodb atlas database
+const mongoURL = process.env.MONGODB_URL;
+
+mongoose
+  .connect(mongoURL)
   .then(() => {
-    console.log('Mongoose connected to ' + mongoURL);
+    console.log("connected to MongoDB server");
   })
   .catch((err) => {
-    console.error('Mongoose connection error:', err);
+    console.error("Mongoose connection error:", err);
   });
 
 // Get the default connection
 const db = mongoose.connection;
 
 // Optional: connection event listeners
-db.on('disconnected', () => {
-  console.log('Mongoose disconnected'); 
+db.on("disconnected", () => {
+  console.log("Mongoose disconnected");
 });
 
 // Export the connection
