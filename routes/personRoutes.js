@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
     const savedPerson = await response.save();
 
     console.log("data saved");
-    res.status(201).json(response);
+    res.status(201).json(savedPerson);
   } catch (error) {
     console.log("Error saving person:", error);
     res.status(500).json({ error: "internal server error" });
@@ -94,7 +94,7 @@ router.delete("/:id", async (req, res) => {
     }
 
     console.log("data deleted");
-    res.status(200).json({ massage: "Person deleted SUccessfully" });
+    res.status(200).json({ message: "Person deleted successfully" });
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "internal server error" });

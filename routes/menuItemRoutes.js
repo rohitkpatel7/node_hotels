@@ -47,18 +47,18 @@ router.put("/:id", async (req, res) => {
   try {
     const menuId = req.params.id;
 
-    const response = await MenuItem.findByIdAndUpdate(
+    const menu = await MenuItem.findByIdAndUpdate(
       menuId,
       req.body,
       { new: true, runValidators: true }
     );
 
-    if (!response) {
+    if (!menu) {
       return res.status(404).json({ error: "Menu not found" });
     }
 
     console.log("menu updated");
-    return res.status(200).json(response);
+    return res.status(200).json(menu);
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "internal server error" });
