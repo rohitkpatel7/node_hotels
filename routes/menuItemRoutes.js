@@ -35,24 +35,24 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:taste", async (req, res) => {
+router.get("/:workType", async (req, res) => {
   try {
-    const taste = req.params.taste; //extract work type from url parameter
+    const workType = req.params.workType;
+
     if (
-      taste == "sour" ||
-      taste == "spicy" ||
-      taste == "sweet" ||
-      taste == "bitter" ||
-      taste == "salty"
+      workType === "chef" ||
+      workType === "waiter" ||
+      workType === "manager"
     ) {
-      const response = await MenuItem.find({ taste: taste });
-      console.log("data fetched for taste");
-      res.status(200).json(response);
+      const response = await Person.find({ work: workType });
+      console.log("data fetched for work");
+      return res.status(200).json(response);
     }
-    res.status(400).json({ error: "Invalid taste type" });
+
+    return res.status(400).json({ error: "Invalid work type" });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "internal server error" });
+    return res.status(500).json({ error: "internal server error" });
   }
 });
 
@@ -82,24 +82,23 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-
 //delete operation
 
 router.delete("/:id", async (req, res) => {
   try {
     const menuId = req.params.id;
-    
+
     const response = await MenuItem.findByIdAndDelete(menuId);
 
-if(!response){
-  return res.status(404).json({error: "Menu Not found"});
-}
-       console.log("Menu data deleted");
-        res.status(200).json({massage: 'Menu deleted SUccessfully'});
+    if (!response) {
+      return res.status(404).json({ error: "Menu Not found" });
+    }
+    console.log("Menu data deleted");
+    res.status(200).json({ massage: "Menu deleted SUccessfully" });
   } catch (err) {
-     console.log(err);
-        res.status(500).json({error:"internal server error"});
+    console.log(err);
+    res.status(500).json({ error: "internal server error" });
   }
-})
+});
 
 module.exports = router;

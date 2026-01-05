@@ -36,16 +36,22 @@ router.get("/", async (req, res) => {
 
 router.get("/:workType", async (req, res) => {
   try {
-    const workType = req.params.workType; //extract work type from url parameter
-    if (workType == "chef" || workType == "waiter" || workType == "manager") {
+    const workType = req.params.workType;
+
+    if (
+      workType === "chef" ||
+      workType === "waiter" ||
+      workType === "manager"
+    ) {
       const response = await Person.find({ work: workType });
       console.log("data fetched for work");
-      res.status(200).json(response);
+      return res.status(200).json(response);
     }
-    res.status(400).json({ error: "Invalid work type" });
+
+    return res.status(400).json({ error: "Invalid work type" });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "internal server error" });
+    return res.status(500).json({ error: "internal server error" });
   }
 });
 
@@ -74,7 +80,7 @@ router.put("/:id", async (req, res) => {
     console.log(err);
     res.status(500).json({ error: "internal server error" });
   }
-});  
+});
 
 //delete methode
 
