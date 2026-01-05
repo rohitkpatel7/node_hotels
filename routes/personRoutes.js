@@ -34,7 +34,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:workType", async (req, res) => {
+router.get("/work/:workType", async (req, res) => {
   try {
     const workType = req.params.workType;
 

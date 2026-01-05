@@ -1,89 +1,71 @@
 const express = require("express");
-const { model } = require("mongoose");
 const router = express.Router();
 const MenuItem = require("../models/MenuItem");
 
-//post method for menu router
-
+// POST - create menu item
 router.post("/", async (req, res) => {
   try {
-    const data = req.body; // Assuming req.body contains the MenuItem data
+    const newMenu = new MenuItem(req.body);
+    const savedMenu = await newMenu.save();
 
-    //create a new MenuItem document using the mongoose model
-    const newMenu = new MenuItem(data);
-
-    //save the new MenuItem document to the database
-    const response = await newMenu.save();
-
-    console.log("data saved");
-    res.status(201).json(response);
+    console.log("menu saved");
+    return res.status(201).json(savedMenu);
   } catch (error) {
     console.log("Error saving MenuItem:", error);
-    res.status(500).json({ error: "internal server error" });
+    return res.status(500).json({ error: "internal server error" });
   }
 });
 
-//get method to get all MenuItems
+// GET - all menu items
 router.get("/", async (req, res) => {
   try {
     const data = await MenuItem.find();
-    console.log("data fetched");
-    res.status(200).json(data);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "internal server error" });
-  }
-});
-
-router.get("/:workType", async (req, res) => {
-  try {
-    const workType = req.params.workType;
-
-    if (
-      workType === "chef" ||
-      workType === "waiter" ||
-      workType === "manager"
-    ) {
-      const response = await Person.find({ work: workType });
-      console.log("data fetched for work");
-      return res.status(200).json(response);
-    }
-
-    return res.status(400).json({ error: "Invalid work type" });
+    console.log("menu fetched");
+    return res.status(200).json(data);
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "internal server error" });
   }
 });
 
-//update method for menu
-
-router.put("/:id", async (req, res) => {
+// GET - menu by taste (OPTIONAL but correct)
+router.get("/taste/:tasteType", async (req, res) => {
   try {
-    const menuId = req.params.id;
-    const updaatedMenuData = req.body;
+    const tasteType = req.params.tasteType;
 
-    const response = await MenuItem.findByIdAndUpdate(
-      menuId,
-      updaatedMenuData,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-    if (!response) {
-      return res.status(404).json({ error: "Menu Not found" });
-    }
-    console.log("Menu data updated");
-    res.status(200).json(response);
+    const response = await MenuItem.find({ taste: tasteType });
+    console.log("menu fetched by taste");
+    return res.status(200).json(response);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "internal server error" });
+    return res.status(500).json({ error: "internal server error" });
   }
 });
 
-//delete operation
+// PUT - update menu item
+router.put("/:id", async (req, res) => {
+  try {
+    const menuId = req.params.id;
 
+    const response = await MenuItem.findByIdAndUpdate(
+      menuId,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!response) {
+      return res.status(404).json({ error: "Menu not found" });
+    }
+
+    console.log("menu updated");
+    return res.status(200).json(response);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "internal server error" });
+  }
+});
+
+// DELETE - remove menu item
 router.delete("/:id", async (req, res) => {
   try {
     const menuId = req.params.id;
@@ -91,13 +73,14 @@ router.delete("/:id", async (req, res) => {
     const response = await MenuItem.findByIdAndDelete(menuId);
 
     if (!response) {
-      return res.status(404).json({ error: "Menu Not found" });
+      return res.status(404).json({ error: "Menu not found" });
     }
-    console.log("Menu data deleted");
-    res.status(200).json({ massage: "Menu deleted SUccessfully" });
+
+    console.log("menu deleted");
+    return res.status(200).json({ message: "Menu deleted successfully" });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "internal server error" });
+    return res.status(500).json({ error: "internal server error" });
   }
 });
 
